@@ -13,12 +13,11 @@
       --primary:#f37021;
       --border:#e5e7eb;
       --ok:#16a34a;
-
-      /* ขยายฟอนต์ขึ้นประมาณ 30% */
-      --font-base:clamp(24px, 2.6vw, 26px);
-      --font-label:clamp(22px, 2.4vw, 25px);
-      --font-title:clamp(31px, 3.4vw, 39px);
-      --font-note:clamp(18px, 2vw, 21px);
+      /* +30% จากเดิม */
+      --font-base:clamp(23px, 2.6vw, 26px);
+      --font-label:clamp(22px, 2.5vw, 24px);
+      --font-title:clamp(31px, 3.6vw, 39px);
+      --font-note:clamp(18px, 2vw, 20px);
     }
 
     * { box-sizing:border-box; }
@@ -26,7 +25,7 @@
     body {
       margin:0;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
-      background:#f9fafb;
+      background:#f3f4f6;
       color:#111827;
       font-size:var(--font-base);
     }
@@ -40,12 +39,19 @@
       height:auto;
     }
 
-    /* ทำให้ฟอร์มกว้างขึ้น ดูเต็มจอมากขึ้น */
     .container {
       width:100%;
-      max-width:1200px;
-      margin:0 auto;
-      padding:16px 12px 32px;
+      max-width:none;       /* ให้เต็มกว้างมากขึ้น */
+      margin:0;
+      padding:20px 10px 32px;
+    }
+
+    @media (min-width:1024px){
+      .container{
+        max-width:1200px;
+        margin:0 auto;
+        padding:28px 24px 40px;
+      }
     }
 
     .card {
@@ -80,8 +86,8 @@
     .row {
       display:grid;
       grid-template-columns:1fr;
-      gap:16px;
-      margin-bottom:16px;
+      gap:18px;
+      margin-bottom:18px;
     }
 
     @media (min-width:760px) {
@@ -93,21 +99,21 @@
     label.title {
       font-weight:800;
       font-size:var(--font-label);
-      margin-bottom:6px;
+      margin-bottom:8px;
       display:block;
     }
 
     .en-label {
       font-weight:600;
       color:#6b7280;
-      font-size:calc(var(--font-label) - 1px);
+      font-size:calc(var(--font-label) - 2px);
       margin-left:4px;
     }
 
     input, select {
       width:100%;
       padding:16px 18px;
-      border-radius:14px;
+      border-radius:16px;
       border:1px solid var(--border);
       background:#fff;
       font-family:inherit;
@@ -131,7 +137,7 @@
       align-items:center;
       justify-content:center;
       padding:18px 24px;
-      border-radius:16px;
+      border-radius:18px;
       border:none;
       cursor:pointer;
       font-weight:800;
@@ -142,7 +148,7 @@
       width:100%;
       background:var(--primary);
       color:#fff;
-      box-shadow:0 12px 30px -16px rgba(248,113,22,0.9);
+      box-shadow:0 14px 32px -18px rgba(248,113,22,0.9);
     }
 
     .btn-primary:disabled {
@@ -160,8 +166,8 @@
 
     /* Consent */
     .consent-box {
-      padding:14px 14px 10px;
-      border-radius:14px;
+      padding:16px 16px 12px;
+      border-radius:16px;
       background:#f9fafb;
       border:1px solid #e5e7eb;
       margin-top:4px;
@@ -170,25 +176,25 @@
     .consent-check {
       display:flex;
       align-items:flex-start;
-      gap:10px;
-      margin-top:10px;
+      gap:12px;
+      margin-top:12px;
       font-size:var(--font-base);
     }
 
     .consent-check input[type="checkbox"] {
       flex:0 0 auto;
-      width:1.25em;
-      height:1.25em;
-      margin-top:0.25em;
+      width:1.4em;
+      height:1.4em;
+      margin-top:0.3em;
       accent-color:var(--primary);
     }
 
     .hidden { display:none!important; }
 
     .success {
-      margin-top:18px;
-      padding:14px 16px;
-      border-radius:12px;
+      margin-top:20px;
+      padding:16px 18px;
+      border-radius:14px;
       background:#ecfdf3;
       border:1px solid #bbf7d0;
       color:#166534;
@@ -196,9 +202,9 @@
     }
 
     .error {
-      margin-top:18px;
-      padding:14px 16px;
-      border-radius:12px;
+      margin-top:20px;
+      padding:16px 18px;
+      border-radius:14px;
       background:#fef2f2;
       border:1px solid #fecaca;
       color:#b91c1c;
@@ -208,7 +214,7 @@
     /* ทำให้ select/option ใหญ่ขึ้นบน iPad / tablet */
     @media (min-width:768px) and (pointer:coarse) {
       select, select option {
-        font-size:28px;
+        font-size:26px;
         line-height:1.6;
       }
     }
@@ -229,37 +235,38 @@
       </div>
 
       <form class="body" id="hotel-form">
-        <!-- ชื่อ TH / EN -->
+        <!-- ชื่อ (TH/EN) -->
         <div class="row two">
           <div>
-            <label class="title">ชื่อจริง (TH)<span class="en-label">/ First Name (TH)</span> *</label>
-            <input id="first_name_th" required>
+            <label class="title">
+              ชื่อจริง (TH/EN)
+              <span class="en-label">/ First Name (TH or EN)</span> *
+            </label>
+            <input id="first_name" required>
           </div>
           <div>
-            <label class="title">นามสกุล (TH)<span class="en-label">/ Last Name (TH)</span> *</label>
-            <input id="last_name_th" required>
-          </div>
-        </div>
-
-        <div class="row two">
-          <div>
-            <label class="title">First Name (EN) *</label>
-            <input id="first_name_en" required>
-          </div>
-          <div>
-            <label class="title">Last Name (EN) *</label>
-            <input id="last_name_en" required>
+            <label class="title">
+              นามสกุล (TH/EN)
+              <span class="en-label">/ Last Name (TH or EN)</span> *
+            </label>
+            <input id="last_name" required>
           </div>
         </div>
 
         <!-- เบอร์ / โรงแรม -->
         <div class="row two">
           <div>
-            <label class="title">เบอร์ติดต่อ *</label>
+            <label class="title">
+              เบอร์ติดต่อ
+              <span class="en-label">/ Phone Number</span> *
+            </label>
             <input id="phone" type="tel" required placeholder="เช่น 0812345678">
           </div>
           <div>
-            <label class="title">โรงแรมที่คุณเข้าพัก *</label>
+            <label class="title">
+              โรงแรมที่คุณเข้าพัก
+              <span class="en-label">/ Hotel You Are Staying At</span> *
+            </label>
             <input id="hotel_name" required placeholder="เช่น Royal Cliff Beach Hotel">
           </div>
         </div>
@@ -267,9 +274,12 @@
         <!-- Country / Province -->
         <div class="row two">
           <div>
-            <label class="title">ประเทศที่อาศัย *</label>
+            <label class="title">
+              ประเทศที่อาศัย
+              <span class="en-label">/ Country of Residence</span> *
+            </label>
             <select id="country" required>
-              <option value="">— เลือกประเทศ / Select —</option>
+              <option value="">— เลือกประเทศ / Select Country —</option>
               <option value="Thailand">Thailand</option>
               <option value="Australia">Australia</option>
               <option value="China">China</option>
@@ -287,10 +297,12 @@
           </div>
 
           <div id="province-wrapper" class="hidden">
-            <label class="title">จังหวัดที่อาศัย (สำหรับผู้พำนักในประเทศไทย)</label>
+            <label class="title">
+              จังหวัดที่อาศัย (สำหรับผู้พำนักในประเทศไทย)
+              <span class="en-label">/ Province (for Residents in Thailand)</span>
+            </label>
             <select id="thai_province">
               <option value="">— เลือกจังหวัด / Select Province —</option>
-              <!-- ... รายชื่อจังหวัดเหมือนเดิม ... -->
               <option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
               <option value="กระบี่">กระบี่</option>
               <option value="กาญจนบุรี">กาญจนบุรี</option>
@@ -374,13 +386,16 @@
         <!-- Consent -->
         <div class="row">
           <div>
-            <label class="title">ยินยอมให้เก็บข้อมูล (Consent) *</label>
+            <label class="title">
+              ยินยอมให้เก็บข้อมูล
+              <span class="en-label">/ Consent</span> *
+            </label>
             <div class="consent-box">
               <p class="note">
-                EN: I understand that this form is used to register for a complimentary ticket for the WGP#1 Waterjet
-                World Cup 2025. My information (name, contact, hotel, and country) may be used by the event organizer
-                and hotel partners for verification and internal reporting only. My data will not be sold or shared with
-                unrelated third parties.
+                EN: I understand that this form is used to register for a complimentary ticket for the
+                WGP#1 Waterjet World Cup 2025. My information (name, contact, hotel, and country) may be
+                used by the event organizer and hotel partners for verification and internal reporting only.
+                My data will not be sold or shared with unrelated third parties.
               </p>
               <p class="note">
                 TH: ข้าพเจ้าขอรับรองว่าข้อมูลที่ให้ไว้เป็นความจริง และยินยอมให้ผู้จัดงานและโรงแรมคู่ค้า
@@ -424,10 +439,11 @@
       const { error } = await sb
         .from('hotel_complimentary_tickets')
         .insert({
-          first_name_th: payload.first_name_th,
-          last_name_th: payload.last_name_th,
-          first_name_en: payload.first_name_en,
-          last_name_en: payload.last_name_en,
+          /* ใช้ชื่อเดียวกันทั้ง TH/EN map ไปยังทุกคอลัมน์เดิม */
+          first_name_th: payload.first_name,
+          last_name_th: payload.last_name,
+          first_name_en: payload.first_name,
+          last_name_en: payload.last_name,
           phone: payload.phone,
           hotel_name: payload.hotel_name,
           country: payload.country,
@@ -466,10 +482,8 @@
       messageBox.textContent = '';
 
       const payload = {
-        first_name_th: document.getElementById('first_name_th').value.trim(),
-        last_name_th: document.getElementById('last_name_th').value.trim(),
-        first_name_en: document.getElementById('first_name_en').value.trim(),
-        last_name_en: document.getElementById('last_name_en').value.trim(),
+        first_name: document.getElementById('first_name').value.trim(),
+        last_name: document.getElementById('last_name').value.trim(),
         phone: document.getElementById('phone').value.trim(),
         hotel_name: document.getElementById('hotel_name').value.trim(),
         country: countryEl.value,
@@ -489,6 +503,7 @@
         form.reset();
         toggleProvince(); // reset province visibility
       } catch (err) {
+        console.error(err);
         messageBox.className = 'error';
         messageBox.textContent =
           'เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองอีกครั้ง หรือแจ้งเจ้าหน้าที่หน้าบูธ.';
