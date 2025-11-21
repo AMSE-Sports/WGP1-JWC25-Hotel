@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hotel Complimentary Ticket Registration • WGP#1</title>
+
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.0/dist/umd/supabase.js"></script>
+
+  <style>
+    :root {
+      --primary:#f37021;
+      --border:#e5e7eb;
+      --ok:#16a34a;
+      --font-base:clamp(18px, 2vw, 20px);
+      --font-label:clamp(17px, 1.9vw, 19px);
+      --font-title:clamp(24px, 3vw, 30px);
+      --font-note:clamp(14px, 1.6vw, 16px);
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      background:#f9fafb;
+      color:#111827;
+      font-size:var(--font-base);
+    }
+
+    .header {
+      background:#000;
+    }
+    .header img {
+      display:block;
+      width:100%;
+      height:auto;
+    }
+
+    .container {
+      max-width:980px;
+      margin:0 auto;
+      padding:24px 16px 40px;
+    }
+
+    .card {
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 10px 40px rgba(15,23,42,0.08);
+      border:1px solid #e5e7eb;
+      overflow:hidden;
+    }
+
+    .head {
+      padding:20px 20px 12px;
+      border-bottom:1px solid var(--border);
+    }
+
+    .head h1 {
+      margin:0 0 4px;
+      font-size:var(--font-title);
+      font-weight:900;
+    }
+
+    .head p {
+      margin:0;
+      font-size:var(--font-note);
+      color:#4b5563;
+    }
+
+    .body {
+      padding:20px;
+    }
+
+    .row {
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+      margin-bottom:16px;
+    }
+
+    @media (min-width:760px) {
+      .row.two {
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
+    label.title {
+      font-weight:800;
+      font-size:var(--font-label);
+      margin-bottom:6px;
+      display:block;
+    }
+
+    .en-label {
+      font-weight:600;
+      color:#6b7280;
+      font-size:calc(var(--font-label) - 1px);
+      margin-left:4px;
+    }
+
+    input, select {
+      width:100%;
+      padding:14px 16px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-family:inherit;
+      font-size:var(--font-base);
+      outline:none;
+      transition:border-color .15s, box-shadow .15s, background .15s;
+    }
+
+    input:focus, select:focus {
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(243,112,33,.18);
+    }
+
+    .note {
+      font-size:var(--font-note);
+      color:#6b7280;
+    }
+
+    .btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px 22px;
+      border-radius:16px;
+      border:none;
+      cursor:pointer;
+      font-weight:800;
+      font-size:var(--font-base);
+    }
+
+    .btn-primary {
+      width:100%;
+      background:var(--primary);
+      color:#fff;
+      box-shadow:0 12px 30px -16px rgba(248,113,22,0.9);
+    }
+
+    .btn-primary:disabled {
+      opacity:.6;
+      cursor:default;
+      box-shadow:none;
+    }
+
+    .footer {
+      margin-top:12px;
+      text-align:center;
+      font-size:var(--font-note);
+      color:#9ca3af;
+    }
+
+    /* Consent */
+    .consent-box {
+      padding:14px 14px 10px;
+      border-radius:14px;
+      background:#f9fafb;
+      border:1px solid #e5e7eb;
+      margin-top:4px;
+    }
+
+    .consent-check {
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:10px;
+      font-size:var(--font-base);
+    }
+
+    .consent-check input[type="checkbox"] {
+      flex:0 0 auto;
+      width:1.25em;
+      height:1.25em;
+      margin-top:0.25em;
+      accent-color:var(--primary);
+    }
+
+    .hidden { display:none!important; }
+
+    .success {
+      margin-top:18px;
+      padding:14px 16px;
+      border-radius:12px;
+      background:#ecfdf3;
+      border:1px solid #bbf7d0;
+      color:#166534;
+      font-size:var(--font-note);
+    }
+
+    .error {
+      margin-top:18px;
+      padding:14px 16px;
+      border-radius:12px;
+      background:#fef2f2;
+      border:1px solid #fecaca;
+      color:#b91c1c;
+      font-size:var(--font-note);
+    }
+
+    /* ทำให้ select/option ใหญ่ขึ้นบน iPad / tablet */
+    @media (min-width:768px) and (pointer:coarse) {
+      select, select option {
+        font-size:22px;
+        line-height:1.6;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER IMAGE -->
+  <div class="header">
+    <!-- วางไฟล์ชื่อ Header.png ไว้โฟลเดอร์เดียวกับไฟล์ HTML นี้ -->
+    <img src="Header.png" alt="WGP#1 Waterjet World Cup 2025 Header">
+  </div>
+
+  <main class="container">
+    <div class="card">
+      <div class="head">
+        <h1>Hotel Complimentary Ticket Registration</h1>
+        <p>ลงทะเบียนเพื่อรับตั๋ว Complimentary Ticket • 1 ใบใช้เข้างานได้ 1 วัน</p>
+      </div>
+
+      <form class="body" id="hotel-form">
+        <!-- ชื่อ TH / EN -->
+        <div class="row two">
+          <div>
+            <label class="title">ชื่อจริง (TH)<span class="en-label">/ First Name (TH)</span> *</label>
+            <input id="first_name_th" required>
+          </div>
+          <div>
+            <label class="title">นามสกุล (TH)<span class="en-label">/ Last Name (TH)</span> *</label>
+            <input id="last_name_th" required>
+          </div>
+        </div>
+
+        <div class="row two">
+          <div>
+            <label class="title">First Name (EN) *</label>
+            <input id="first_name_en" required>
+          </div>
+          <div>
+            <label class="title">Last Name (EN) *</label>
+            <input id="last_name_en" required>
+          </div>
+        </div>
+
+        <!-- เบอร์ / โรงแรม -->
+        <div class="row two">
+          <div>
+            <label class="title">เบอร์ติดต่อ *</label>
+            <input id="phone" type="tel" required placeholder="เช่น 0812345678">
+          </div>
+          <div>
+            <label class="title">โรงแรมที่คุณเข้าพัก *</label>
+            <input id="hotel_name" required placeholder="เช่น Royal Cliff Beach Hotel">
+          </div>
+        </div>
+
+        <!-- Country / Province -->
+        <div class="row two">
+          <div>
+            <label class="title">ประเทศที่อาศัย *</label>
+            <select id="country" required>
+              <option value="">— เลือกประเทศ / Select —</option>
+              <option value="Thailand">Thailand</option>
+              <option value="Australia">Australia</option>
+              <option value="China">China</option>
+              <option value="France">France</option>
+              <option value="Germany">Germany</option>
+              <option value="India">India</option>
+              <option value="Japan">Japan</option>
+              <option value="Korea">Korea</option>
+              <option value="Malaysia">Malaysia</option>
+              <option value="Singapore">Singapore</option>
+              <option value="United Kingdom">United Kingdom</option>
+              <option value="United States">United States</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div id="province-wrapper" class="hidden">
+            <label class="title">จังหวัดที่อาศัย (สำหรับผู้พำนักในประเทศไทย)</label>
+            <select id="thai_province">
+              <option value="">— เลือกจังหวัด / Select Province —</option>
+              <option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
+              <option value="กระบี่">กระบี่</option>
+              <option value="กาญจนบุรี">กาญจนบุรี</option>
+              <option value="กาฬสินธุ์">กาฬสินธุ์</option>
+              <option value="กำแพงเพชร">กำแพงเพชร</option>
+              <option value="ขอนแก่น">ขอนแก่น</option>
+              <option value="จันทบุรี">จันทบุรี</option>
+              <option value="ฉะเชิงเทรา">ฉะเชิงเทรา</option>
+              <option value="ชลบุรี">ชลบุรี</option>
+              <option value="ชัยนาท">ชัยนาท</option>
+              <option value="ชัยภูมิ">ชัยภูมิ</option>
+              <option value="ชุมพร">ชุมพร</option>
+              <option value="เชียงราย">เชียงราย</option>
+              <option value="เชียงใหม่">เชียงใหม่</option>
+              <option value="ตรัง">ตรัง</option>
+              <option value="ตราด">ตราด</option>
+              <option value="ตาก">ตาก</option>
+              <option value="นครนายก">นครนายก</option>
+              <option value="นครปฐม">นครปฐม</option>
+              <option value="นครพนม">นครพนม</option>
+              <option value="นครราชสีมา">นครราชสีมา</option>
+              <option value="นครศรีธรรมราช">นครศรีธรรมราช</option>
+              <option value="นครสวรรค์">นครสวรรค์</option>
+              <option value="นนทบุรี">นนทบุรี</option>
+              <option value="นราธิวาส">นราธิวาส</option>
+              <option value="น่าน">น่าน</option>
+              <option value="บึงกาฬ">บึงกาฬ</option>
+              <option value="บุรีรัมย์">บุรีรัมย์</option>
+              <option value="ปทุมธานี">ปทุมธานี</option>
+              <option value="ประจวบคีรีขันธ์">ประจวบคีรีขันธ์</option>
+              <option value="ปราจีนบุรี">ปราจีนบุรี</option>
+              <option value="ปัตตานี">ปัตตานี</option>
+              <option value="พระนครศรีอยุธยา">พระนครศรีอยุธยา</option>
+              <option value="พังงา">พังงา</option>
+              <option value="พัทลุง">พัทลุง</option>
+              <option value="พิจิตร">พิจิตร</option>
+              <option value="พิษณุโลก">พิษณุโลก</option>
+              <option value="เพชรบุรี">เพชรบุรี</option>
+              <option value="เพชรบูรณ์">เพชรบูรณ์</option>
+              <option value="แพร่">แพร่</option>
+              <option value="พะเยา">พะเยา</option>
+              <option value="ภูเก็ต">ภูเก็ต</option>
+              <option value="มหาสารคาม">มหาสารคาม</option>
+              <option value="มุกดาหาร">มุกดาหาร</option>
+              <option value="แม่ฮ่องสอน">แม่ฮ่องสอน</option>
+              <option value="ยโสธร">ยโสธร</option>
+              <option value="ยะลา">ยะลา</option>
+              <option value="ร้อยเอ็ด">ร้อยเอ็ด</option>
+              <option value="ระนอง">ระนอง</option>
+              <option value="ระยอง">ระยอง</option>
+              <option value="ราชบุรี">ราชบุรี</option>
+              <option value="ลพบุรี">ลพบุรี</option>
+              <option value="ลำปาง">ลำปาง</option>
+              <option value="ลำพูน">ลำพูน</option>
+              <option value="ศรีสะเกษ">ศรีสะเกษ</option>
+              <option value="สกลนคร">สกลนคร</option>
+              <option value="สงขลา">สงขลา</option>
+              <option value="สตูล">สตูล</option>
+              <option value="สมุทรปราการ">สมุทรปราการ</option>
+              <option value="สมุทรสงคราม">สมุทรสงคราม</option>
+              <option value="สมุทรสาคร">สมุทรสาคร</option>
+              <option value="สระแก้ว">สระแก้ว</option>
+              <option value="สระบุรี">สระบุรี</option>
+              <option value="สิงห์บุรี">สิงห์บุรี</option>
+              <option value="สุโขทัย">สุโขทัย</option>
+              <option value="สุพรรณบุรี">สุพรรณบุรี</option>
+              <option value="สุราษฎร์ธานี">สุราษฎร์ธานี</option>
+              <option value="สุรินทร์">สุรินทร์</option>
+              <option value="หนองคาย">หนองคาย</option>
+              <option value="หนองบัวลำภู">หนองบัวลำภู</option>
+              <option value="อ่างทอง">อ่างทอง</option>
+              <option value="อำนาจเจริญ">อำนาจเจริญ</option>
+              <option value="อุดรธานี">อุดรธานี</option>
+              <option value="อุตรดิตถ์">อุตรดิตถ์</option>
+              <option value="อุทัยธานี">อุทัยธานี</option>
+              <option value="อุบลราชธานี">อุบลราชธานี</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Consent -->
+        <div class="row">
+          <div>
+            <label class="title">ยินยอมให้เก็บข้อมูล (Consent) *</label>
+            <div class="consent-box">
+              <p class="note">
+                EN: I understand that this form is used to register for a complimentary ticket for the WGP#1 Waterjet
+                World Cup 2025. My information (name, contact, hotel, and country) may be used by the event organizer
+                and hotel partners for verification and internal reporting only. My data will not be sold or shared with
+                unrelated third parties.
+              </p>
+              <p class="note">
+                TH: ข้าพเจ้าขอรับรองว่าข้อมูลที่ให้ไว้เป็นความจริง และยินยอมให้ผู้จัดงานและโรงแรมคู่ค้า
+                ใช้ข้อมูลนี้เพื่อการยืนยันสิทธิ์ตั๋วเข้างาน และการจัดทำรายงานภายในเท่านั้น
+                ข้อมูลจะไม่ถูกขายหรือเปิดเผยต่อบุคคลภายนอกที่ไม่เกี่ยวข้อง
+              </p>
+
+              <label class="consent-check">
+                <input type="checkbox" id="consent" required>
+                <span>
+                  ฉันได้อ่านและยินยอมให้เก็บและใช้ข้อมูลตามที่ระบุข้างต้น<br>
+                  I have read and consent to the data usage described above.
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submit-btn">
+          ส่งข้อมูลลงทะเบียน • Submit Registration
+        </button>
+
+        <div id="message" class="hidden"></div>
+      </form>
+    </div>
+
+    <div class="footer">
+      © 2025 WGP#1 Waterjet World Cup
+    </div>
+  </main>
+
+  <script>
+    // ---------- Supabase Config ----------
+    const SUPABASE_URL = 'https://mhecpnqwwxspxfhdvzsc.supabase.co';
+    const SUPABASE_ANON_KEY =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1oZWNwbnF3d3hzcHhmaGR2enNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwMDc0MjEsImV4cCI6MjA3ODU4MzQyMX0.ONaEMqU6BHuMSywE3Yvtbj78NqBbecI18amsD18Cgnc';
+
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function submitToSupabase(payload) {
+      const { error } = await sb
+        .from('hotel_complimentary_tickets')
+        .insert({
+          first_name_th: payload.first_name_th,
+          last_name_th: payload.last_name_th,
+          first_name_en: payload.first_name_en,
+          last_name_en: payload.last_name_en,
+          phone: payload.phone,
+          hotel_name: payload.hotel_name,
+          country: payload.country,
+          thai_province: payload.thai_province || null,
+          consent: !!payload.consent
+        });
+
+      if (error) {
+        console.error('[Supabase insert error]', error);
+        throw error;
+      }
+    }
+
+    // ---------- Province toggle ----------
+    const countryEl = document.getElementById('country');
+    const provinceWrapper = document.getElementById('province-wrapper');
+    const provinceEl = document.getElementById('thai_province');
+
+    function toggleProvince() {
+      const isTH = countryEl.value === 'Thailand';
+      provinceWrapper.classList.toggle('hidden', !isTH);
+      if (!isTH) provinceEl.value = '';
+    }
+
+    countryEl.addEventListener('change', toggleProvince);
+    toggleProvince(); // initial
+
+    // ---------- Form Submit ----------
+    const form = document.getElementById('hotel-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const messageBox = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      messageBox.className = 'hidden';
+      messageBox.textContent = '';
+
+      const payload = {
+        first_name_th: document.getElementById('first_name_th').value.trim(),
+        last_name_th: document.getElementById('last_name_th').value.trim(),
+        first_name_en: document.getElementById('first_name_en').value.trim(),
+        last_name_en: document.getElementById('last_name_en').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        hotel_name: document.getElementById('hotel_name').value.trim(),
+        country: countryEl.value,
+        thai_province: provinceEl.value || '',
+        consent: document.getElementById('consent').checked
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังบันทึก... / Submitting...';
+
+      try {
+        await submitToSupabase(payload);
+
+        messageBox.className = 'success';
+        messageBox.textContent =
+          'บันทึกข้อมูลเรียบร้อยแล้ว ขอบคุณที่ลงทะเบียนรับ Complimentary Ticket.';
+        form.reset();
+        toggleProvince(); // reset province visibility
+      } catch (err) {
+        messageBox.className = 'error';
+        messageBox.textContent =
+          'เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองอีกครั้ง หรือแจ้งเจ้าหน้าที่หน้าบูธ.';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'ส่งข้อมูลลงทะเบียน • Submit Registration';
+      }
+    });
+  </script>
+</body>
+</html>
