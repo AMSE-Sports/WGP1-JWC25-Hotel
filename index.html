@@ -13,10 +13,12 @@
       --primary:#f37021;
       --border:#e5e7eb;
       --ok:#16a34a;
-      --font-base:clamp(18px, 2vw, 20px);
-      --font-label:clamp(17px, 1.9vw, 19px);
-      --font-title:clamp(24px, 3vw, 30px);
-      --font-note:clamp(14px, 1.6vw, 16px);
+
+      /* ขยายฟอนต์ขึ้นประมาณ 30% */
+      --font-base:clamp(24px, 2.6vw, 26px);
+      --font-label:clamp(22px, 2.4vw, 25px);
+      --font-title:clamp(31px, 3.4vw, 39px);
+      --font-note:clamp(18px, 2vw, 21px);
     }
 
     * { box-sizing:border-box; }
@@ -38,10 +40,12 @@
       height:auto;
     }
 
+    /* ทำให้ฟอร์มกว้างขึ้น ดูเต็มจอมากขึ้น */
     .container {
-      max-width:980px;
+      width:100%;
+      max-width:1200px;
       margin:0 auto;
-      padding:24px 16px 40px;
+      padding:16px 12px 32px;
     }
 
     .card {
@@ -102,7 +106,7 @@
 
     input, select {
       width:100%;
-      padding:14px 16px;
+      padding:16px 18px;
       border-radius:14px;
       border:1px solid var(--border);
       background:#fff;
@@ -126,7 +130,7 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      padding:16px 22px;
+      padding:18px 24px;
       border-radius:16px;
       border:none;
       cursor:pointer;
@@ -204,7 +208,7 @@
     /* ทำให้ select/option ใหญ่ขึ้นบน iPad / tablet */
     @media (min-width:768px) and (pointer:coarse) {
       select, select option {
-        font-size:22px;
+        font-size:28px;
         line-height:1.6;
       }
     }
@@ -286,6 +290,7 @@
             <label class="title">จังหวัดที่อาศัย (สำหรับผู้พำนักในประเทศไทย)</label>
             <select id="thai_province">
               <option value="">— เลือกจังหวัด / Select Province —</option>
+              <!-- ... รายชื่อจังหวัดเหมือนเดิม ... -->
               <option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
               <option value="กระบี่">กระบี่</option>
               <option value="กาญจนบุรี">กาญจนบุรี</option>
