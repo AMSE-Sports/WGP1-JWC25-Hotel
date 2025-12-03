@@ -420,8 +420,6 @@
 
         <div id="message" class="hidden"></div>
 
-        <div id="message" class="hidden"></div>
-
 <!-- การ์ดยืนยันการลงทะเบียน / ใช้กับ fillConfirmCard() -->
 <div id="confirm-card" class="success hidden">
   <p><strong>ข้อมูลลงทะเบียนของคุณ</strong></p>
@@ -583,6 +581,28 @@ form.addEventListener('submit', async (e) => {
   submitBtn.disabled = true;
   submitBtn.textContent = 'กำลังบันทึก... / Submitting...';
 
+ form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  messageBox.className = 'hidden';
+  messageBox.textContent = '';
+
+  const payload = {
+    first_name: document.getElementById('first_name').value.trim(),
+    last_name: document.getElementById('last_name').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    hotel_name: document.getElementById('hotel_name').value.trim(),
+    country: countryEl.value,
+    thai_province: provinceEl.value || '',
+    consent: document.getElementById('consent').checked,
+  };
+
+  // สร้างรหัสอ้างอิง
+  payload.registration_ref = createReference(payload.phone);
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'กำลังบันทึก... / Submitting...';
+
   try {
     await submitToSupabase(payload);
 
@@ -601,19 +621,20 @@ form.addEventListener('submit', async (e) => {
     form.reset();
     toggleProvince();
 
- } catch (err) {
-  console.error(err);
+  } catch (err) {
+    console.error(err);
 
-  if (err.code === '23505') {
-    messageBox.className = 'error';
-    messageBox.textContent =
-      'เบอร์โทรนี้ได้ลงทะเบียนแล้ว กรุณาใช้เบอร์อื่น หรือแสดงรหัสอ้างอิงเดิมให้เจ้าหน้าที่ตรวจสอบ.';
-  } else {
-    messageBox.className = 'error';
-    messageBox.textContent =
-      'เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองอีกครั้ง หรือแจ้งเจ้าหน้าที่.';
-  }
-}
+    // ถ้าตั้ง unique constraint ที่ column phone แล้ว
+    // error โค้ด 23505 = เบอร์นี้ใช้แล้ว
+    if (err.code === '23505') {
+      messageBox.className = 'error';
+      messageBox.textContent =
+        'เบอร์โทรนี้ได้ลงทะเบียนแล้ว กรุณาใช้เบอร์อื่น หรือแสดงรหัสอ้างอิงเดิมให้เจ้าหน้าที่ตรวจสอบ.';
+    } else {
+      messageBox.className = 'error';
+      messageBox.textContent =
+        'เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองอีกครั้ง หรือแจ้งเจ้าหน้าที่.';
+    }
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = 'ส่งข้อมูลลงทะเบียน • Submit Registration';
