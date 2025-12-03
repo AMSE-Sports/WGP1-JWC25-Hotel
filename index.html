@@ -716,6 +716,7 @@ async function lookupByPhone(phone) {
 const lookupBtn = document.getElementById('lookup-btn');
 const lookupPhoneInput = document.getElementById('lookup_phone');
 const lookupMessage = document.getElementById('lookup-message');
+const confirmCard = document.getElementById('confirm-card');
 
 lookupBtn.addEventListener('click', async () => {
   const phone = lookupPhoneInput.value.trim();
@@ -731,21 +732,32 @@ lookupBtn.addEventListener('click', async () => {
 
   lookupMessage.textContent = 'กำลังค้นหา... / Searching...';
 
+  // ดึงข้อมูลจาก Supabase
   const record = await lookupByPhone(phone);
 
   if (!record) {
     lookupMessage.textContent =
       'ไม่พบข้อมูลการลงทะเบียนด้วยเบอร์นี้ / No registration found for this phone number.';
-    // ถ้าอยากซ่อนการ์ดเมื่อไม่พบข้อมูล ให้เปิดบรรทัดนี้
-    // document.getElementById('confirm-card').classList.add('hidden');
+    // ซ่อนการ์ดถ้าไม่มีข้อมูล
+    confirmCard.classList.add('hidden');
     return;
   }
 
-  // เติมข้อมูลจากฐานข้อมูลลงการ์ดยืนยัน แล้วแสดง
+  // เติมข้อมูลลงการ์ดจาก record ที่ได้
   fillConfirmCard(record);
-  document.getElementById('confirm-card').classList.remove('hidden');
+
+  // แสดงการ์ด
+  confirmCard.classList.remove('hidden');
+
+  // ข้อความแจ้งเตือน
   lookupMessage.textContent =
-      'พบข้อมูลการลงทะเบียนแล้ว / Registration found.';
+    'พบข้อมูลการลงทะเบียนแล้ว / Registration found.';
+
+  // เลื่อนจอให้เห็นการ์ดชัด ๆ
+  confirmCard.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  });
 });
   
 /* -------------------------------
