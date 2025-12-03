@@ -466,7 +466,55 @@
     EN: Please take a screenshot of this page and show it to the staff to verify your complimentary ticket at the venue.
   </p>
 </div>
-        
+
+    <!-- การ์ดยืนยันการลงทะเบียน / ใช้กับ fillConfirmCard() -->
+<div id="confirm-card" class="success hidden">
+  <p><strong>ข้อมูลลงทะเบียนของคุณ / Your Registration Details</strong></p>
+  <p><strong>ชื่อ–นามสกุล / Full Name:</strong> <span id="c-name"></span></p>
+  <p><strong>เบอร์ติดต่อ / Phone Number:</strong> <span id="c-phone"></span></p>
+  <p><strong>โรงแรมที่เข้าพัก / Hotel:</strong> <span id="c-hotel"></span></p>
+  <p><strong>ประเทศที่อาศัย / Country of Residence:</strong> <span id="c-country"></span></p>
+
+  <div id="c-province-wrap">
+    <p><strong>จังหวัด (สำหรับผู้พำนักในไทย) / Province (for residents in Thailand):</strong> <span id="c-province"></span></p>
+  </div>
+
+  <p><strong>Reference ID:</strong> <span id="c-ref"></span></p>
+
+  <p class="note" style="margin-top:8px;">
+    TH: กรุณาแคปหน้าจอนี้เก็บไว้ เพื่อแสดงให้เจ้าหน้าที่ตรวจสอบสิทธิ์ตั๋วเข้าชมหน้างาน<br>
+    EN: Please take a screenshot of this page and show it to the staff to verify your complimentary ticket at the venue.
+  </p>
+</div>
+
+<hr style="margin:24px 0; border:none; border-top:1px solid var(--border);">
+
+<!-- กล่องค้นหาข้อมูลจากเบอร์โทร -->
+<div class="lookup-box">
+  <label class="title">
+    ค้นหาข้อมูลจากเบอร์โทร
+    <span class="en-label">/ Lookup Registration by Phone</span>
+  </label>
+  <p class="note">
+    TH: ใช้สำหรับค้นหาข้อมูลการลงทะเบียนที่เคยบันทึกไว้แล้ว เช่น กรณีลืมแคปหน้าจอ<br>
+    EN: Use this to retrieve an existing registration, e.g. if you forgot to take a screenshot.
+  </p>
+
+  <div class="row two">
+    <div>
+      <input id="lookup_phone" type="tel"
+             placeholder="กรอกเบอร์โทรที่ใช้ลงทะเบียน เช่น 0812345678">
+    </div>
+    <div>
+      <button type="button" class="btn btn-primary" id="lookup-btn">
+        ค้นหาการลงทะเบียน / Lookup
+      </button>
+    </div>
+  </div>
+
+  <div id="lookup-message" class="note" style="margin-top:8px;"></div>
+</div>
+    
       </form>
     </div>
 
@@ -662,6 +710,44 @@ async function lookupByPhone(phone) {
   return data[0];
 }
 
+/* -------------------------------
+   Lookup Registration by phone (UI)
+-------------------------------- */
+const lookupBtn = document.getElementById('lookup-btn');
+const lookupPhoneInput = document.getElementById('lookup_phone');
+const lookupMessage = document.getElementById('lookup-message');
+
+lookupBtn.addEventListener('click', async () => {
+  const phone = lookupPhoneInput.value.trim();
+
+  lookupMessage.className = 'note';
+  lookupMessage.textContent = '';
+
+  if (!phone) {
+    lookupMessage.textContent =
+      'กรุณากรอกเบอร์โทรศัพท์ที่ต้องการค้นหา / Please enter a phone number.';
+    return;
+  }
+
+  lookupMessage.textContent = 'กำลังค้นหา... / Searching...';
+
+  const record = await lookupByPhone(phone);
+
+  if (!record) {
+    lookupMessage.textContent =
+      'ไม่พบข้อมูลการลงทะเบียนด้วยเบอร์นี้ / No registration found for this phone number.';
+    // ถ้าอยากซ่อนการ์ดเมื่อไม่พบข้อมูล ให้เปิดบรรทัดนี้
+    // document.getElementById('confirm-card').classList.add('hidden');
+    return;
+  }
+
+  // เติมข้อมูลจากฐานข้อมูลลงการ์ดยืนยัน แล้วแสดง
+  fillConfirmCard(record);
+  document.getElementById('confirm-card').classList.remove('hidden');
+  lookupMessage.textContent =
+      'พบข้อมูลการลงทะเบียนแล้ว / Registration found.';
+});
+  
 /* -------------------------------
    Restore Saved Card on Page Load
 -------------------------------- */
