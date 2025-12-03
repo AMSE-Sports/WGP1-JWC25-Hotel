@@ -256,13 +256,18 @@
         <!-- เบอร์ / โรงแรม -->
         <div class="row two">
           <div>
-            <label class="title">
-              เบอร์ติดต่อ
-              <span class="en-label">/ Phone Number</span> *
-            </label>
-            <input id="phone" type="tel" required placeholder="เช่น 0812345678">
-          </div>
-          <div>
+  <label class="title">
+    เบอร์ติดต่อ
+    <span class="en-label">/ Phone Number</span> *
+  </label>
+  <input id="phone" type="tel" required placeholder="เช่น 0812345678">
+  <p class="note">
+    TH: 1 หมายเลขโทรศัพท์สามารถใช้ลงทะเบียนได้เพียง 1 ครั้งเท่านั้น  
+    กรุณาอย่าใช้เบอร์ที่เคยลงทะเบียนแล้ว เพื่อป้องกันการรับสิทธิ์ซ้ำ<br>
+    EN: Each phone number can be used only once for registration.  
+    Please do not use a number that has already been registered.
+  </p>
+</div>
             <label class="title">
               โรงแรมที่คุณเข้าพัก
               <span class="en-label">/ Hotel You Are Staying At</span> *
@@ -422,20 +427,43 @@
 
 <!-- การ์ดยืนยันการลงทะเบียน / ใช้กับ fillConfirmCard() -->
 <div id="confirm-card" class="success hidden">
-  <p><strong>ข้อมูลลงทะเบียนของคุณ</strong></p>
-  <p><strong>ชื่อ–นามสกุล:</strong> <span id="c-name"></span></p>
-  <p><strong>เบอร์ติดต่อ:</strong> <span id="c-phone"></span></p>
-  <p><strong>โรงแรมที่เข้าพัก:</strong> <span id="c-hotel"></span></p>
-  <p><strong>ประเทศที่อาศัย:</strong> <span id="c-country"></span></p>
+  <p><strong>ข้อมูลลงทะเบียนของคุณ / Your Registration Details</strong></p>
+
+  <p>
+    <strong>ชื่อ–นามสกุล / Full Name:</strong>
+    <span id="c-name"></span>
+  </p>
+
+  <p>
+    <strong>เบอร์ติดต่อ / Phone Number:</strong>
+    <span id="c-phone"></span>
+  </p>
+
+  <p>
+    <strong>โรงแรมที่เข้าพัก / Hotel:</strong>
+    <span id="c-hotel"></span>
+  </p>
+
+  <p>
+    <strong>ประเทศที่อาศัย / Country of Residence:</strong>
+    <span id="c-country"></span>
+  </p>
 
   <div id="c-province-wrap">
-    <p><strong>จังหวัด (สำหรับผู้พำนักในไทย):</strong> <span id="c-province"></span></p>
+    <p>
+      <strong>จังหวัด (สำหรับผู้พำนักในไทย) / Province (for residents in Thailand):</strong>
+      <span id="c-province"></span>
+    </p>
   </div>
 
-  <p><strong>Reference ID:</strong> <span id="c-ref"></span></p>
+  <p>
+    <strong>Reference ID:</strong>
+    <span id="c-ref"></span>
+  </p>
 
   <p class="note" style="margin-top:8px;">
-    กรุณาแคปหน้าจอนี้เก็บไว้ เพื่อแสดงให้เจ้าหน้าที่ตรวจสอบสิทธิ์ตั๋วเข้าชมหน้างาน
+    TH: กรุณาแคปหน้าจอนี้เก็บไว้ เพื่อแสดงให้เจ้าหน้าที่ตรวจสอบสิทธิ์ตั๋วเข้าชมหน้างาน<br>
+    EN: Please take a screenshot of this page and show it to the staff to verify your complimentary ticket at the venue.
   </p>
 </div>
         
