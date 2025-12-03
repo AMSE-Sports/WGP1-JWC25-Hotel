@@ -447,7 +447,7 @@
     </div>
   </main>
 
- <script>
+<script>
 /* -------------------------------
    Supabase Config
 -------------------------------- */
@@ -530,7 +530,7 @@ async function submitToSupabase(payload) {
         consent: payload.consent,
         registration_ref: payload.registration_ref
       },
-      { returning: 'minimal' }   // 👈 สำคัญ อยู่ตรงนี้
+      { returning: 'minimal' }   // ลด data ที่ตอบกลับ
     );
 
   if (error) {
@@ -545,8 +545,8 @@ async function submitToSupabase(payload) {
 function createReference(phone) {
   const now = new Date();
   const y = String(now.getFullYear()).slice(-2);
-  const m = String(now.getMonth()+1).padStart(2,'0');
-  const d = String(now.getDate()).padStart(2,'0');
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
   const last4 = phone.slice(-4);
 
   return `H-${y}${m}${d}-${last4}`;
@@ -560,28 +560,6 @@ const submitBtn = document.getElementById('submit-btn');
 const messageBox = document.getElementById('message');
 
 form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  messageBox.className = 'hidden';
-  messageBox.textContent = '';
-
-  const payload = {
-    first_name: document.getElementById('first_name').value.trim(),
-    last_name: document.getElementById('last_name').value.trim(),
-    phone: document.getElementById('phone').value.trim(),
-    hotel_name: document.getElementById('hotel_name').value.trim(),
-    country: countryEl.value,
-    thai_province: provinceEl.value || '',
-    consent: document.getElementById('consent').checked,
-  };
-
-  // สร้างรหัสอ้างอิง
-  payload.registration_ref = createReference(payload.phone);
-
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'กำลังบันทึก... / Submitting...';
-
- form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   messageBox.className = 'hidden';
@@ -624,8 +602,7 @@ form.addEventListener('submit', async (e) => {
   } catch (err) {
     console.error(err);
 
-    // ถ้าตั้ง unique constraint ที่ column phone แล้ว
-    // error โค้ด 23505 = เบอร์นี้ใช้แล้ว
+    // ถ้าตั้ง UNIQUE constraint ที่ phone แล้ว
     if (err.code === '23505') {
       messageBox.className = 'error';
       messageBox.textContent =
