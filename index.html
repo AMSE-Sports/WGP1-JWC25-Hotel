@@ -436,26 +436,23 @@
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     async function submitToSupabase(payload) {
-      const { error } = await sb
-        .from('hotel_complimentary_tickets')
-        .insert({
-          /* ใช้ชื่อเดียวกันทั้ง TH/EN map ไปยังทุกคอลัมน์เดิม */
-          first_name_th: payload.first_name,
-          last_name_th: payload.last_name,
-          first_name_en: payload.first_name,
-          last_name_en: payload.last_name,
-          phone: payload.phone,
-          hotel_name: payload.hotel_name,
-          country: payload.country,
-          thai_province: payload.thai_province || null,
-          consent: !!payload.consent
-        });
+  const { error } = await sb
+    .from('hotel_complimentary_tickets')
+    .insert({
+      first_name:    payload.first_name,
+      last_name:     payload.last_name,
+      phone:         payload.phone,
+      hotel_name:    payload.hotel_name,
+      country:       payload.country,
+      thai_province: payload.thai_province || null,
+      consent:       !!payload.consent
+    });
 
-      if (error) {
-        console.error('[Supabase insert error]', error);
-        throw error;
-      }
-    }
+  if (error) {
+    console.error('[Supabase insert error]', error);
+    throw error;
+  }
+}
 
     // ---------- Province toggle ----------
     const countryEl = document.getElementById('country');
