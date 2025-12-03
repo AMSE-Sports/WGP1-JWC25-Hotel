@@ -218,17 +218,23 @@
       font-size:var(--font-note);
     }
 
-    .capture-warning {
-      margin-top:16px;
-      padding:18px 20px;
-      border-radius:16px;
-      background:#fef9c3;
-      border:2px dashed #facc15;
-      font-size:clamp(20px, 2.4vw, 24px);
-      font-weight:900;
-      color:#92400e;
-      text-align:center;
-    }
+    /* กล่องข้อความ "กรุณาแคปหน้าจอ" สีแดงแบบเน้น */
+.screenshot-box {
+  margin-top:22px;
+  padding:20px 22px;
+  border-radius:18px;
+  border:3px solid #dc2626;
+  background:#fee2e2;
+  color:#7f1d1d;
+  font-size:clamp(20px, 2.5vw, 24px);
+  font-weight:800;
+  text-align:center;
+  box-shadow:0 0 0 3px #fecaca;
+}
+.screenshot-box strong {
+  display:block;
+  margin-bottom:4px;
+}
 
     /* tablet select bigger */
     @media (min-width:768px) and (pointer:coarse) {
@@ -291,11 +297,18 @@
               <label class="title">
                 อายุ
                 <span class="en-label">/ Age</span> *
-              </label>
-              <input id="age" type="number" min="1" max="120" required placeholder="เช่น 25">
+             <select id="v-age" required>
+                <option value="">— เลือกช่วงอายุ / Select —</option>
+                <option>ต่ำกว่า 18 ปี / Under 18</option>
+                <option>18-25 ปี / 18–25</option>
+                <option>26-40 ปี / 26–40</option>
+                <option>41-60 ปี / 41–60</option>
+                <option>60 ปีขึ้นไป / 60+</option>
+              </select>
             </div>
           </div>
-
+        </div>
+      
           <!-- เบอร์ / โรงแรม -->
           <div class="row two">
             <div>
@@ -512,16 +525,6 @@
             </p>
 
             <p>
-              <strong>เพศ / Gender:</strong>
-              <span id="c-gender"></span>
-            </p>
-
-            <p>
-              <strong>อายุ / Age:</strong>
-              <span id="c-age"></span>
-            </p>
-
-            <p>
               <strong>เบอร์ติดต่อ / Phone Number:</strong>
               <span id="c-phone"></span>
             </p>
@@ -530,18 +533,6 @@
               <strong>โรงแรมที่เข้าพัก / Hotel:</strong>
               <span id="c-hotel"></span>
             </p>
-
-            <p>
-              <strong>ประเทศที่อาศัย / Country of Residence:</strong>
-              <span id="c-country"></span>
-            </p>
-
-            <div id="c-province-wrap">
-              <p>
-                <strong>จังหวัด (สำหรับผู้พำนักในไทย) / Province (for residents in Thailand):</strong>
-                <span id="c-province"></span>
-              </p>
-            </div>
 
             <p>
               <strong>Reference ID:</strong>
@@ -732,14 +723,14 @@ form.addEventListener('submit', async (e) => {
 });
 
 /* -------------------------------
-   Lookup Registration (by first name)
-   - คืนข้อมูลล่าสุดของชื่อนั้น
+   Lookup Registration by FULL NAME
 -------------------------------- */
-async function lookupByFirstName(name) {
+async function lookupByFullName(firstName, lastName) {
   const { data, error } = await sb
     .from('hotel_complimentary_tickets')
     .select('*')
-    .ilike('first_name', `%${name}%`)
+    .ilike('first_name', `%${firstName}%`)
+    .ilike('last_name', `%${lastName}%`)
     .order('id', { ascending: false })
     .limit(1);
 
@@ -747,7 +738,6 @@ async function lookupByFirstName(name) {
     console.error('[Supabase lookup error]', error);
     return null;
   }
-
   if (!data || data.length === 0) return null;
   return data[0];
 }
@@ -755,41 +745,44 @@ async function lookupByFirstName(name) {
 /* -------------------------------
    Lookup UI
 -------------------------------- */
-const lookupBtn = document.getElementById('lookup-btn');
-const lookupNameInput = document.getElementById('lookup_name');
-const lookupMessage = document.getElementById('lookup-message');
+const lookupBtn        = document.getElementById('lookup-btn');
+const lookupFirstInput = document.getElementById('lookup_first_name');
+const lookupLastInput  = document.getElementById('lookup_last_name');
+const lookupMessage    = document.getElementById('lookup-message');
 
 lookupBtn.addEventListener('click', async () => {
-  const name = lookupNameInput.value.trim();
+  const firstName = lookupFirstInput.value.trim();
+  const lastName  = lookupLastInput.value.trim();
 
   lookupMessage.className = 'note';
   lookupMessage.textContent = '';
 
-  if (!name) {
+  if (!firstName || !lastName) {
     lookupMessage.className = 'error';
     lookupMessage.textContent =
-      'กรุณากรอกชื่อจริงที่ต้องการค้นหา / Please enter a first name.';
+      'กรุณากรอกทั้งชื่อ และนามสกุล / Please enter both first name and last name.';
     return;
   }
 
   lookupMessage.className = 'note';
   lookupMessage.textContent = 'กำลังค้นหา... / Searching...';
 
-  const record = await lookupByFirstName(name);
+  const record = await lookupByFullName(firstName, lastName);
 
   if (!record) {
     lookupMessage.className = 'error';
     lookupMessage.textContent =
-      'ไม่พบข้อมูลการลงทะเบียนด้วยชื่อนี้ / No registration found for this first name.';
+      'ไม่พบข้อมูลการลงทะเบียนด้วยชื่อ–นามสกุลนี้ / No registration found for this full name.';
     return;
   }
+
+  // แสดงผลข้อมูลล่าสุดของคนนี้
+  fillSuccessView(record);
+  saveLocal(record);
 
   lookupMessage.className = 'success';
   lookupMessage.textContent =
     'พบข้อมูลการลงทะเบียนแล้ว / Registration found.';
-
-  // แสดงหน้า success พร้อมข้อมูลของคนที่ค้นหาเจอ
-  showSuccessPage(record);
 });
 
 /* -------------------------------
