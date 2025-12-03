@@ -499,18 +499,24 @@ toggleProvince();
 async function submitToSupabase(payload) {
   const { error } = await sb
     .from('hotel_complimentary_tickets')
-    .insert({
-      first_name: payload.first_name,
-      last_name: payload.last_name,
-      phone: payload.phone,
-      hotel_name: payload.hotel_name,
-      country: payload.country,
-      thai_province: payload.thai_province || null,
-      consent: payload.consent,
-      registration_ref: payload.registration_ref
-    });
+    .insert(
+      {
+        first_name: payload.first_name,
+        last_name: payload.last_name,
+        phone: payload.phone,
+        hotel_name: payload.hotel_name,
+        country: payload.country,
+        thai_province: payload.thai_province || null,
+        consent: payload.consent,
+        registration_ref: payload.registration_ref
+      },
+      { returning: 'minimal' }   // 👈 สำคัญ อยู่ตรงนี้
+    );
 
-  if (error) throw error;
+  if (error) {
+    console.error('[Supabase insert error]', error);
+    throw error;
+  }
 }
 
 /* -------------------------------
