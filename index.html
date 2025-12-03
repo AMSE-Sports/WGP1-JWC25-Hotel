@@ -427,88 +427,185 @@
     </div>
   </main>
 
-  <script>
-    // ---------- Supabase Config ----------
-    const SUPABASE_URL = 'https://mhecpnqwwxspxfhdvzsc.supabase.co';
-    const SUPABASE_ANON_KEY =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1oZWNwbnF3d3hzcHhmaGR2enNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwMDc0MjEsImV4cCI6MjA3ODU4MzQyMX0.ONaEMqU6BHuMSywE3Yvtbj78NqBbecI18amsD18Cgnc';
+ <script>
+/* -------------------------------
+   Supabase Config
+-------------------------------- */
+const SUPABASE_URL = 'https://mhecpnqwwxspxfhdvzsc.supabase.co';
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1oZWNwbnF3d3hzcHhmaGR2enNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwMDc0MjEsImV4cCI6MjA3ODU4MzQyMX0.ONaEMqU6BHuMSywE3Yvtbj78NqBbecI18amsD18Cgnc';
 
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    async function submitToSupabase(payload) {
-  const { error } = await sb
-    .from('hotel_complimentary_tickets')
-    .insert({
-      first_name:    payload.first_name,
-      last_name:     payload.last_name,
-      phone:         payload.phone,
-      hotel_name:    payload.hotel_name,
-      country:       payload.country,
-      thai_province: payload.thai_province || null,
-      consent:       !!payload.consent
-    });
+/* -------------------------------
+   Save & Restore from LocalStorage
+-------------------------------- */
 
-  if (error) {
-    console.error('[Supabase insert error]', error);
-    throw error;
+function saveLocal(payload) {
+  localStorage.setItem("hotel_registration", JSON.stringify(payload));
+}
+
+function loadLocal() {
+  const data = localStorage.getItem("hotel_registration");
+  return data ? JSON.parse(data) : null;
+}
+
+function showSavedCardIfAny() {
+  const data = loadLocal();
+  if (!data) return;
+
+  fillConfirmCard(data);
+  document.getElementById("confirm-card").classList.remove("hidden");
+}
+
+/* -------------------------------
+   Fill Confirmation Card
+-------------------------------- */
+function fillConfirmCard(p) {
+  document.getElementById('c-name').textContent = `${p.first_name} ${p.last_name}`;
+  document.getElementById('c-phone').textContent = p.phone;
+  document.getElementById('c-hotel').textContent = p.hotel_name;
+  document.getElementById('c-country').textContent = p.country;
+  document.getElementById('c-ref').textContent = p.registration_ref;
+
+  const wrap = document.getElementById("c-province-wrap");
+  if (p.country === "Thailand" && p.thai_province) {
+    document.getElementById("c-province").textContent = p.thai_province;
+    wrap.classList.remove("hidden");
+  } else {
+    wrap.classList.add("hidden");
   }
 }
 
-    // ---------- Province toggle ----------
-    const countryEl = document.getElementById('country');
-    const provinceWrapper = document.getElementById('province-wrapper');
-    const provinceEl = document.getElementById('thai_province');
+/* -------------------------------
+   Province Show/Hide
+-------------------------------- */
+const countryEl = document.getElementById('country');
+const provinceWrapper = document.getElementById('province-wrapper');
+const provinceEl = document.getElementById('thai_province');
 
-    function toggleProvince() {
-      const isTH = countryEl.value === 'Thailand';
-      provinceWrapper.classList.toggle('hidden', !isTH);
-      if (!isTH) provinceEl.value = '';
-    }
+function toggleProvince() {
+  const isTH = countryEl.value === 'Thailand';
+  provinceWrapper.classList.toggle('hidden', !isTH);
+  if (!isTH) provinceEl.value = '';
+}
 
-    countryEl.addEventListener('change', toggleProvince);
-    toggleProvince(); // initial
+countryEl.addEventListener('change', toggleProvince);
+toggleProvince();
 
-    // ---------- Form Submit ----------
-    const form = document.getElementById('hotel-form');
-    const submitBtn = document.getElementById('submit-btn');
-    const messageBox = document.getElementById('message');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      messageBox.className = 'hidden';
-      messageBox.textContent = '';
-
-      const payload = {
-        first_name: document.getElementById('first_name').value.trim(),
-        last_name: document.getElementById('last_name').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        hotel_name: document.getElementById('hotel_name').value.trim(),
-        country: countryEl.value,
-        thai_province: provinceEl.value || '',
-        consent: document.getElementById('consent').checked
-      };
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'กำลังบันทึก... / Submitting...';
-
-      try {
-        await submitToSupabase(payload);
-
-        messageBox.className = 'success';
-        messageBox.textContent =
-          'บันทึกข้อมูลเรียบร้อยแล้ว ขอบคุณที่ลงทะเบียนรับ Complimentary Ticket.';
-        form.reset();
-        toggleProvince(); // reset province visibility
-      } catch (err) {
-        console.error(err);
-        messageBox.className = 'error';
-        messageBox.textContent =
-          'เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองอีกครั้ง หรือแจ้งเจ้าหน้าที่หน้าบูธ.';
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'ส่งข้อมูลลงทะเบียน • Submit Registration';
-      }
+/* -------------------------------
+   Submit to Supabase
+-------------------------------- */
+async function submitToSupabase(payload) {
+  const { error } = await sb
+    .from('hotel_complimentary_tickets')
+    .insert({
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      phone: payload.phone,
+      hotel_name: payload.hotel_name,
+      country: payload.country,
+      thai_province: payload.thai_province || null,
+      consent: payload.consent,
+      registration_ref: payload.registration_ref
     });
-  </script>
+
+  if (error) throw error;
+}
+
+/* -------------------------------
+   CREATE Reference ID
+-------------------------------- */
+function createReference(phone) {
+  const now = new Date();
+  const y = String(now.getFullYear()).slice(-2);
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const d = String(now.getDate()).padStart(2,'0');
+  const last4 = phone.slice(-4);
+
+  return `H-${y}${m}${d}-${last4}`;
+}
+
+/* -------------------------------
+   Form Submit Handler
+-------------------------------- */
+const form = document.getElementById('hotel-form');
+const submitBtn = document.getElementById('submit-btn');
+const messageBox = document.getElementById('message');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  messageBox.className = 'hidden';
+  messageBox.textContent = '';
+
+  const payload = {
+    first_name: document.getElementById('first_name').value.trim(),
+    last_name: document.getElementById('last_name').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    hotel_name: document.getElementById('hotel_name').value.trim(),
+    country: countryEl.value,
+    thai_province: provinceEl.value || '',
+    consent: document.getElementById('consent').checked,
+  };
+
+  // สร้างรหัสอ้างอิง
+  payload.registration_ref = createReference(payload.phone);
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'กำลังบันทึก... / Submitting...';
+
+  try {
+    await submitToSupabase(payload);
+
+    // Save LocalStorage
+    saveLocal(payload);
+
+    // Success Message
+    messageBox.className = 'success';
+    messageBox.textContent =
+      'บันทึกข้อมูลเรียบร้อยแล้ว ขอบคุณที่ลงทะเบียนรับ Complimentary Ticket.';
+
+    // Show Confirmation Card
+    fillConfirmCard(payload);
+    document.getElementById("confirm-card").classList.remove("hidden");
+
+    form.reset();
+    toggleProvince();
+
+  } catch (err) {
+    console.error(err);
+    messageBox.className = 'error';
+    messageBox.textContent =
+      'เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองอีกครั้ง หรือแจ้งเจ้าหน้าที่.';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'ส่งข้อมูลลงทะเบียน • Submit Registration';
+  }
+});
+
+/* -------------------------------
+   Lookup Registration (by phone)
+-------------------------------- */
+async function lookupByPhone(phone) {
+  const { data, error } = await sb
+    .from('hotel_complimentary_tickets')
+    .select('*')
+    .eq('phone', phone)
+    .order('id', { ascending: false })
+    .limit(1);
+
+  if (error || !data || data.length === 0) return null;
+
+  return data[0];
+}
+
+/* -------------------------------
+   Restore Saved Card on Page Load
+-------------------------------- */
+document.addEventListener("DOMContentLoaded", () => {
+  showSavedCardIfAny();
+});
+</script>
 </body>
 </html>
