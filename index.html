@@ -695,22 +695,6 @@ form.addEventListener('submit', async (e) => {
 });
 
 /* -------------------------------
-   Lookup Registration (by phone)
--------------------------------- */
-async function lookupByPhone(phone) {
-  const { data, error } = await sb
-    .from('hotel_complimentary_tickets')
-    .select('*')
-    .eq('phone', phone)
-    .order('id', { ascending: false })
-    .limit(1);
-
-  if (error || !data || data.length === 0) return null;
-
-  return data[0];
-}
-
-/* -------------------------------
    Lookup Registration by phone (UI)
 -------------------------------- */
 const lookupBtn = document.getElementById('lookup-btn');
@@ -725,35 +709,36 @@ lookupBtn.addEventListener('click', async () => {
   lookupMessage.textContent = '';
 
   if (!phone) {
+    lookupMessage.className = 'error';
     lookupMessage.textContent =
       'กรุณากรอกเบอร์โทรศัพท์ที่ต้องการค้นหา / Please enter a phone number.';
     return;
   }
 
+  lookupMessage.className = 'note';
   lookupMessage.textContent = 'กำลังค้นหา... / Searching...';
 
   // ดึงข้อมูลจาก Supabase
   const record = await lookupByPhone(phone);
 
   if (!record) {
+    lookupMessage.className = 'error';   // <-- ใช้สีแดง
     lookupMessage.textContent =
       'ไม่พบข้อมูลการลงทะเบียนด้วยเบอร์นี้ / No registration found for this phone number.';
-    // ซ่อนการ์ดถ้าไม่มีข้อมูล
+
     confirmCard.classList.add('hidden');
     return;
   }
 
-  // เติมข้อมูลลงการ์ดจาก record ที่ได้
+  // เติมข้อมูลลงการ์ด
   fillConfirmCard(record);
 
-  // แสดงการ์ด
   confirmCard.classList.remove('hidden');
 
-  // ข้อความแจ้งเตือน
+  lookupMessage.className = 'success';
   lookupMessage.textContent =
     'พบข้อมูลการลงทะเบียนแล้ว / Registration found.';
 
-  // เลื่อนจอให้เห็นการ์ดชัด ๆ
   confirmCard.scrollIntoView({
     behavior: 'smooth',
     block: 'start'
