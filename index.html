@@ -601,11 +601,19 @@ form.addEventListener('submit', async (e) => {
     form.reset();
     toggleProvince();
 
-  } catch (err) {
-    console.error(err);
+ } catch (err) {
+  console.error(err);
+
+  if (err.code === '23505') {
+    messageBox.className = 'error';
+    messageBox.textContent =
+      'เบอร์โทรนี้ได้ลงทะเบียนแล้ว กรุณาใช้เบอร์อื่น หรือแสดงรหัสอ้างอิงเดิมให้เจ้าหน้าที่ตรวจสอบ.';
+  } else {
     messageBox.className = 'error';
     messageBox.textContent =
       'เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองอีกครั้ง หรือแจ้งเจ้าหน้าที่.';
+  }
+}
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = 'ส่งข้อมูลลงทะเบียน • Submit Registration';
