@@ -254,7 +254,10 @@
       font-size:var(--font-base);
       font-weight:800;
     }
-
+.success-back-btn {
+  margin-top:20px;
+  width:100%;
+}
   
 
     @media (min-width:768px) and (pointer:coarse) {
@@ -543,41 +546,40 @@
     </div>
 
     <!-- PAGE 2 : SUCCESS -->
-    <div id="page-success" class="hidden">
-      <div class="card">
-        <div class="head">
-          <h1>ลงทะเบียนสำเร็จ / Registration Completed</h1>
-          <p>กรุณาเก็บข้อมูลอ้างอิงด้านล่างไว้เพื่อใช้แสดงสิทธิ์ตั๋ว Complimentary Ticket ของคุณ</p>
-        </div>
-        <div class="body">
-          <div id="confirm-card" class="success">
-            <p class="success-title-main">
-              ลงทะเบียนสำเร็จ<br>
-              <span style="font-size:0.9em;">Registration Successful</span>
-            </p>
+<div id="page-success" class="hidden">
+  <div class="card">
+    <div class="body">
+      <!-- กล่องข้อความออเรนจ์ -->
+      <div id="confirm-card" class="success-card">
+        <h2>ลงทะเบียนสำเร็จ<br>Registration Successful</h2>
 
-            <p class="success-title-sub">
-              TH: กรุณาแคปหน้าจอนี้ เพื่อแสดงแก่จุดลงทะเบียนหน้างาน<br>
-              EN: Please take a screenshot of this screen and show it at the registration point.
-            </p>
+        <p class="success-text">
+          <strong>TH:</strong> กรุณาแคปหน้าจอนี้ เพื่อแสดงแก่จุดลงทะเบียนหน้างาน<br>
+          <strong>EN:</strong> Please take a screenshot of this screen and show it at the registration point.
+        </p>
 
-            <div class="success-ref-label">
-              หมายเลข Reference ของคุณคือ<br>
-              <span style="font-weight:600;">Your Reference No. is</span>
-            </div>
-            <div id="c-ref" class="success-ref-value">H-0000</div>
+        <p class="success-ref-label">
+          หมายเลข Reference ของคุณคือ<br>
+          Your Reference No. is
+        </p>
 
-            <div class="success-name-label">
-              ชื่อ–นามสกุล / Full Name
-            </div>
-            <div id="c-name" class="success-name-value"></div>
+        <p class="success-ref" id="c-ref">H-0000</p>
 
-          <button type="button" class="btn btn-secondary" id="new-register-btn">
-            กลับสู่หน้าหลัก / Back to home page
-          </button>
-        </div>
+        <p class="success-name-label">
+          ชื่อ–นามสกุล / Full Name
+        </p>
+        <p class="success-name" id="c-name">John Doe</p>
       </div>
+
+      <!-- ปุ่มอยู่นอกกล่องข้อความแล้ว -->
+      <button type="button"
+              class="btn btn-secondary success-back-btn"
+              id="new-register-btn">
+        กลับสู่หน้าหลัก / Back to home page
+      </button>
     </div>
+  </div>
+</div>
 
     <div class="footer">
       © 2025 WGP#1 Waterjet World Cup
