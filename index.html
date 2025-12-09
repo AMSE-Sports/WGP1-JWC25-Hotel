@@ -254,7 +254,35 @@
       font-size:var(--font-base);
       font-weight:800;
     }
-  
+  .success h2 {
+  font-size:clamp(28px, 3.2vw, 34px);
+  font-weight:900;
+  margin:0 0 12px;
+  color:#c2410c;
+}
+
+.success-text {
+  margin:0 0 16px;
+}
+
+.success-ref-label,
+.success-name-label {
+  margin-top:12px;
+  font-weight:700;
+}
+
+.success-ref {
+  font-size:clamp(32px, 3.8vw, 40px);
+  font-weight:900;
+  letter-spacing:0.08em;
+  margin:4px 0 0;
+  color:#b91c1c;
+}
+
+.success-name {
+  margin-top:6px;
+  font-weight:800;
+}
 
     @media (min-width:768px) and (pointer:coarse) {
       select, select option {
@@ -546,7 +574,7 @@
   <div class="card">
     <div class="body">
       <!-- กล่องข้อความออเรนจ์ -->
-      <div id="confirm-card" class="success-card">
+      <div id="confirm-card" class="success">
         <h2>ลงทะเบียนสำเร็จ<br>Registration Successful</h2>
 
         <p class="success-text">
