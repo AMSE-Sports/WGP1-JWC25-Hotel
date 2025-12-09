@@ -195,12 +195,14 @@
 
     .success {
       margin-top:20px;
-      padding:16px 18px;
-      border-radius:14px;
-      background:#ecfdf3;
-      border:1px solid #bbf7d0;
-      color:#166534;
+      padding:20px 22px;
+      border-radius:18px;
+      background:#fff7ef;
+      border:2px solid #fdba74;
+      color:#7c2d12;
       font-size:var(--font-note);
+      text-align:center;
+      box-shadow:0 8px 24px rgba(248,113,22,0.15);
     }
 
     .error {
@@ -213,22 +215,51 @@
       font-size:var(--font-note);
     }
 
-    .screenshot-box {
-      margin-top:22px;
-      padding:20px 22px;
-      border-radius:18px;
-      border:3px solid #dc2626;
-      background:#fee2e2;
-      color:#7f1d1d;
-      font-size:clamp(20px, 2.5vw, 24px);
-      font-weight:800;
-      text-align:center;
-      box-shadow:0 0 0 3px #fecaca;
+    .success-title-main {
+      font-size:clamp(28px, 3.2vw, 34px);
+      font-weight:900;
+      margin:0 0 6px;
+      color:#c2410c;
     }
 
-    .screenshot-box strong {
-      display:block;
-      margin-bottom:4px;
+    .success-title-sub {
+      font-size:var(--font-note);
+      font-weight:700;
+      margin:0 0 14px;
+      color:#9a3412;
+    }
+
+    .success-ref-label {
+      margin-top:16px;
+      font-weight:700;
+      font-size:var(--font-note);
+    }
+
+    .success-ref-value {
+      font-size:clamp(32px, 3.8vw, 40px);
+      font-weight:900;
+      letter-spacing:0.08em;
+      margin-top:4px;
+      color:#b91c1c;
+    }
+
+    .success-name-label {
+      margin-top:14px;
+      font-weight:700;
+      font-size:var(--font-note);
+    }
+
+    .success-name-value {
+      margin-top:4px;
+      font-size:var(--font-base);
+      font-weight:800;
+    }
+
+    .footer-note {
+      margin-top:18px;
+      font-size:var(--font-note);
+      color:#7f1d1d;
+      line-height:1.5;
     }
 
     @media (min-width:768px) and (pointer:coarse) {
@@ -330,6 +361,7 @@
               </label>
               <select id="country" required>
                 <option value="">— เลือกประเทศ / Select Country —</option>
+                <!-- (รายการประเทศเดิมทั้งหมด) -->
                 <option value="Afghanistan">Afghanistan</option>
                 <option value="Albania">Albania</option>
                 <option value="Algeria">Algeria</option>
@@ -519,37 +551,6 @@
           </button>
 
           <div id="message" class="hidden"></div>
-
-          <hr style="margin:24px 0; border:none; border-top:1px solid var(--border);">
-
-          <!-- Lookup -->
-          <div class="lookup-box">
-            <label class="title">
-              ค้นหาข้อมูลจากชื่อ–นามสกุล
-              <span class="en-label">/ Lookup Registration by Full Name</span>
-            </label>
-            <p class="note">
-              TH: ใช้สำหรับค้นหาข้อมูลการลงทะเบียนที่เคยบันทึกไว้แล้ว เช่น กรณีลืมแคปหน้าจอ<br>
-              EN: Use this to retrieve an existing registration by full name, e.g. if you forgot to take a screenshot.
-            </p>
-
-            <div class="row two">
-              <div>
-                <input id="lookup_first_name" type="text"
-                       placeholder="ชื่อจริง / First Name เช่น Somchai หรือ สมชาย">
-              </div>
-              <div>
-                <input id="lookup_last_name" type="text"
-                       placeholder="นามสกุล / Last Name เช่น Chan หรือ ชาญ">
-              </div>
-            </div>
-
-            <button type="button" class="btn btn-primary" id="lookup-btn">
-              ค้นหาการลงทะเบียน / Lookup
-            </button>
-
-            <div id="lookup-message" class="note" style="margin-top:8px;"></div>
-          </div>
         </form>
       </div>
     </div>
@@ -559,32 +560,34 @@
       <div class="card">
         <div class="head">
           <h1>ลงทะเบียนสำเร็จ / Registration Completed</h1>
-          <p>โปรดเก็บข้อมูลด้านล่างไว้เพื่อแสดงสิทธิ์ตั๋ว Complimentary Ticket ของคุณ</p>
+          <p>กรุณาเก็บข้อมูลอ้างอิงด้านล่างไว้เพื่อใช้แสดงสิทธิ์ตั๋ว Complimentary Ticket ของคุณ</p>
         </div>
         <div class="body">
           <div id="confirm-card" class="success">
-            <p><strong>ข้อมูลลงทะเบียนของคุณ / Your Registration Details</strong></p>
-
-            <p>
-              <strong>ชื่อ–นามสกุล / Full Name:</strong>
-              <span id="c-name"></span>
+            <p class="success-title-main">
+              ลงทะเบียนสำเร็จ<br>
+              <span style="font-size:0.9em;">Registration Successful</span>
             </p>
 
-            <p>
-              <strong>โรงแรมที่เข้าพัก / Hotel:</strong>
-              <span id="c-hotel"></span>
+            <p class="success-title-sub">
+              TH: กรุณาแคปหน้าจอนี้ เพื่อแสดงแก่จุดลงทะเบียนหน้างาน<br>
+              EN: Please take a screenshot of this screen and show it at the registration point.
             </p>
 
-            <p>
-              <strong>Reference ID:</strong>
-              <span id="c-ref"></span>
-            </p>
+            <div class="success-ref-label">
+              หมายเลข Reference ของคุณคือ<br>
+              <span style="font-weight:600;">Your Reference No. is</span>
+            </div>
+            <div id="c-ref" class="success-ref-value">H-0000</div>
 
-            <div class="screenshot-box">
-              <strong>TH:</strong>
-              กรุณาแคปหน้าจอนี้เก็บไว้ เพื่อแสดงให้เจ้าหน้าที่ตรวจสอบสิทธิ์ตั๋วเข้าชมหน้างาน<br><br>
-              <strong>EN:</strong>
-              Please take a screenshot of this page and show it to the staff to verify your complimentary ticket at the venue.
+            <div class="success-name-label">
+              ชื่อ–นามสกุล / Full Name
+            </div>
+            <div id="c-name" class="success-name-value"></div>
+
+            <div class="footer-note">
+              โปรดเก็บหมายเลขนี้และชื่อ–นามสกุลให้ตรงกับบัตรประชาชน หรือหนังสือเดินทางของคุณ<br>
+              Please ensure that your full name matches your ID or passport when presenting this reference.
             </div>
           </div>
 
@@ -629,7 +632,6 @@ function loadLocal() {
 function fillConfirmCard(p) {
   document.getElementById('c-name').textContent =
     `${p.first_name || ''} ${p.last_name || ''}`.trim();
-  document.getElementById('c-hotel').textContent = p.hotel_name || '-';
   document.getElementById('c-ref').textContent   = p.registration_ref || '-';
 }
 
@@ -653,7 +655,7 @@ async function submitToSupabase(payload) {
       phone:            payload.phone,
       hotel_name:       payload.hotel_name,
       country:          payload.country,
-      thai_province:    null,              // ไม่ใช้จังหวัดแล้ว
+      thai_province:    null,
       consent:          payload.consent,
       registration_ref: payload.registration_ref
     }, { returning: 'minimal' });
@@ -728,63 +730,6 @@ form.addEventListener('submit', async (e) => {
     submitBtn.disabled = false;
     submitBtn.textContent = 'ส่งข้อมูลลงทะเบียน • Submit Registration';
   }
-});
-
-/* Lookup by full name */
-async function lookupByFullName(firstName, lastName) {
-  const { data, error } = await sb
-    .from('hotel_complimentary_tickets')
-    .select('*')
-    .ilike('first_name', `%${firstName}%`)
-    .ilike('last_name', `%${lastName}%`)
-    .order('id', { ascending: false })
-    .limit(1);
-
-  if (error) {
-    console.error('[Supabase lookup error]', error);
-    return null;
-  }
-  if (!data || data.length === 0) return null;
-  return data[0];
-}
-
-const lookupBtn        = document.getElementById('lookup-btn');
-const lookupFirstInput = document.getElementById('lookup_first_name');
-const lookupLastInput  = document.getElementById('lookup_last_name');
-const lookupMessage    = document.getElementById('lookup-message');
-
-lookupBtn.addEventListener('click', async () => {
-  const firstName = lookupFirstInput.value.trim();
-  const lastName  = lookupLastInput.value.trim();
-
-  lookupMessage.className = 'note';
-  lookupMessage.textContent = '';
-
-  if (!firstName || !lastName) {
-    lookupMessage.className = 'error';
-    lookupMessage.textContent =
-      'กรุณากรอกทั้งชื่อ และนามสกุล / Please enter both first name and last name.';
-    return;
-  }
-
-  lookupMessage.className = 'note';
-  lookupMessage.textContent = 'กำลังค้นหา... / Searching...';
-
-  const record = await lookupByFullName(firstName, lastName);
-
-  if (!record) {
-    lookupMessage.className = 'error';
-    lookupMessage.textContent =
-      'ไม่พบข้อมูลการลงทะเบียนด้วยชื่อ–นามสกุลนี้ / No registration found for this full name.';
-    return;
-  }
-
-  saveLocal(record);
-  showSuccessPage(record);
-
-  lookupMessage.className = 'success';
-  lookupMessage.textContent =
-    'พบข้อมูลการลงทะเบียนแล้ว / Registration found.';
 });
 
 /* New Registration button */
