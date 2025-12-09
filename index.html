@@ -650,7 +650,7 @@ function showSuccessPage(payload) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* Insert to Supabase (allow duplicate phone) */
+/* Insert to Supabase */
 async function submitToSupabase(payload) {
   const { error } = await sb
     .from('hotel_complimentary_tickets')
@@ -659,7 +659,7 @@ async function submitToSupabase(payload) {
       last_name:        payload.last_name,
       gender:           payload.gender,
       age_group:        payload.age_group,
-      phone:            payload.phone,
+      // phone:         payload.phone,  // ลบออก (หรือจะใส่เป็น null ถ้า schema ยังมี column นี้)
       hotel_name:       payload.hotel_name,
       country:          payload.country,
       thai_province:    null,
@@ -711,7 +711,7 @@ form.addEventListener('submit', async (e) => {
     last_name:    document.getElementById('last_name').value.trim(),
     gender:       document.getElementById('gender').value,
     age_group:    document.getElementById('age_group').value,
-    phone:        document.getElementById('phone').value.trim(),
+    // phone:     document.getElementById('phone').value.trim(), // ลบออก
     hotel_name:   document.getElementById('hotel_name').value.trim(),
     country:      countryEl.value,
     consent:      document.getElementById('consent').checked,
